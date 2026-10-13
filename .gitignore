@@ -1,0 +1,15 @@
+# Entorno virtual de Python (pesado y se puede recrear)
+.venv/
+
+# Claves y contraseñas (NUNCA subirlas)
+.env
+
+# Manual original (contiene la contraseña de administrador; se guarda solo en local)
+data/raw/
+
+# Diagramas generados con Archify (se pueden regenerar)
+.archify/
+
+# Archivos temporales que genera Python
+__pycache__/
+*.pyc
