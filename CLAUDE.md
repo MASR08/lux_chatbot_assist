@@ -16,7 +16,7 @@ para diseñar e implementar este chatbot desde cero, sin abrumarlo con complejid
 ## Reglas de trabajo
 1. **Pedagogía mixta:** explicar siempre el *porqué* en español sencillo antes de dar código.
 2. **Mapeo de archivos:** indicar siempre en qué archivo/carpeta va cada código (ej. `bot/config.py`).
-3. **Diseño modular:** separar la lógica del bot, las fuentes de información y la API.
+3. **Diseño modular:** separar la lógica del bot, las fuentes de inform ación y la API.
 4. **Sin atajos incompletos:** nada de placeholders sin explicar. Los bloques largos se explican por partes.
 5. **Validación continua:** al final de cada paso, dar una tarea concreta o verificación antes de avanzar.
 
@@ -90,15 +90,18 @@ lux_chatbot_assist/
 - Cada fragmento guarda metadatos: origen (manual/web), sección, URL (si es web) e imagen (si tiene).
 - Ayudas visuales: formato Markdown (pasos numerados, negritas, listas) + etiqueta de origen (📘 Manual / 🌐 Web). La caja de avisos queda para después.
 - Login: sin login en local; antes del despliegue hay que protegerlo con Supabase Auth.
-- Entorno: Python 3.12.4 (el del `.venv`), Git 2.56. Ojo: en el PC también hay Python 3.15 (`C:\Python315`), que es el que responde a `python` sin el venv activado; algunas librerías (p. ej. MarkItDown/onnxruntime) aún no funcionan en 3.15. Usar siempre el venv.
+- Entorno: Python 3.12 para el `.venv`, Git 2.56. Al 2026-10-13 el único Python instalado es 3.12.3 (`C:\Users\WORK\AppData\Local\Programs\Python\Python312`); el Python 3.15 (`C:\Python315`) de la sesión anterior ya no aparece. Crear el venv con `py -3.12 -m venv .venv` y usar siempre el venv (algunas librerías, p. ej. MarkItDown/onnxruntime, no funcionaban en 3.15).
 - Herramientas de apoyo (fuera del venv, no forman parte del chatbot): Node.js + skill Archify para diagramas (salida en `.archify/`, ignorada por Git).
 
 ## Progreso
-- **Fase actual:** cerrando la Fase 1 (última sesión: 2026-10-12).
+- **Fase actual:** empezando la Fase 2 (última sesión: 2026-10-13).
 
 ### Hecho
 - **Arquitectura decidida:** Vercel + Supabase + API de OpenAI (se descartó Azure). Las etapas indican qué herramienta se usa en cada paso.
-- **Entorno virtual:** creado en `.venv/` (Python 3.12.4). Sin librerías instaladas todavía (las del Python global no se ven desde el venv). Activación: PowerShell `.venv\Scripts\Activate.ps1` (ya se explicó `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned`); cmd `.venv\Scripts\activate.bat`.
+- **Fase 2, paso 1 (2026-10-13):** `.venv` creado de nuevo con `py -3.12 -m venv .venv` (Python 3.12.3, pip 26.2.1), activado y seleccionado como intérprete en VS Code.
+- **Fase 2, paso 2 (2026-10-13):** carpetas creadas en la raíz del repo (`chatbot_lux/`, no `lux_chatbot_assist/`): `api/`, `bot/`, `knowledge/loaders/`, `data/images/`, `web/`, `tests/`, con `__init__.py` vacíos en `api`, `bot`, `knowledge`, `knowledge/loaders` y `tests`. Los archivos de código (`config.py`, `engine.py`, `store.py`, loaders, etc.) se crean cuando se escribe su código, no antes.
+- **Fase 2, paso 3 (2026-10-13):** `requirements.txt` en la raíz con versiones fijadas: python-docx 1.2.0, openai 3.29.0, supabase 2.32.0, python-dotenv 1.2.4, fastapi 0.143.0, uvicorn 0.54.0. Instaladas en el `.venv` y verificado que se importan. Solo van las librerías principales (las dependencias las instala pip). Para la web se añadirá otra librería más adelante. En la Fase 5 quizá convenga separar lo que solo usa la Etapa 1 (python-docx) de lo que necesita Vercel.
+- **Entorno virtual (sesión anterior):** creado en `.venv/` (Python 3.12.4); se perdió el 2026-10-13 y se volvió a crear (ver paso 1). Sin librerías instaladas todavía (las del Python global no se ven desde el venv). Activación: PowerShell `.venv\Scripts\Activate.ps1` (ya se explicó `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned`); cmd `.venv\Scripts\activate.bat`.
 - **`.gitignore`:** creado (ignora `.venv/`, `.env`, `data/raw/`, `.archify/`, `__pycache__/`, `*.pyc`). El manual no se sube a Git (no hace falta: la ingesta corre en local y sube a Supabase); el desarrollador debe guardar un respaldo aparte. Esto NO resuelve que la contraseña llegue al bot.
 - **Git:** el repositorio ya tiene remoto (`origin/main`), así que probablemente ya existe la cuenta de GitHub (confirmar). Pendiente el primer commit con `.gitignore` y `CLAUDE.md` (lo hace el desarrollador).
 - **Diagrama de las dos etapas:** generado con Archify en `.archify/workflow-etapas-chatbot-20261012-205029/etapas-chatbot.html` (todavía muestra Azure OpenAI; regenerarlo con OpenAI si se quiere).
@@ -108,17 +111,19 @@ lux_chatbot_assist/
 - **Decisión sobre imágenes en el bot:** cada imagen se guarda como archivo (`data/images/` → Supabase Storage) y su dirección va en los **metadatos** del fragmento, no en el texto que recibe la IA (cero tokens). El texto alternativo puede ir en el fragmento (pocos tokens, mejora la búsqueda).
 - **Herramientas evaluadas:** Archify (instalado como skill global en `~/.agents/skills/archify`, enlazado a Claude Code; requiere Node.js, ya instalado). Spec Kit de GitHub (no por ahora; quizá más adelante). MarkItDown (solo como revisor).
 
+- **Manual corregido revisado (2026-10-13):** `data/raw/MANUAL DE SOPORTE PARA COLABORADORES LUXv1.docx` (copiado desde Descargas). Resultado: estilos Título 1 (secciones 1–6) y Título 2 (2.1, 2.2) ✅; 16 PNG, 18 imágenes en línea (image10 e image11 se repiten), 0 flotantes, 0 formas, 0 cuadros de texto, todas con texto alternativo ✅; capturas de Shadow Defender ya unidas con sus recuadros y números ✅; la contraseña ya no aparece (dice "brindada por el administrador") ✅. image11 (1,4 KB) es el icono de Deep Freeze descongelado, es válido.
+- **Incidencia (2026-10-13):** las carpetas ignoradas por Git (`.venv/`, `data/raw/` con `pruebas/`, `.archify/`) desaparecieron del proyecto. Se volvió a crear `data/raw/`. El `.venv` hay que crearlo de nuevo en la Fase 2.
+- **Git:** primer commit y push hechos (`c23b7e4`).
+
+- **Manual LISTO (2026-10-13, 2.ª revisión):** archivo final `data/raw/MANUAL DE SOPORTE PARA COLABORADORES LUXv1.docx`. Títulos: 1–6 (Título 1) y 2.1, 2.2, 3.1 Deep Freeze, 3.2 Shadow Defender, 5.1 Deep Freeze, 5.2 Shadow Defender (Título 2). Erratas principales corregidas (numeración de la sección 4, Shadow Defender en la 5.2). La clave de licencia que se ve en las capturas de Deep Freeze (image6, image14) **se deja a propósito: el desarrollador confirma que es obsoleta**. Retoques menores (línea suelta en 3.1, "Windows", título 5.2) también corregidos (3.ª revisión, 2026-10-13).
+- **Nota para `word_loader.py`:** cuando Word tiene el archivo abierto, crea en `data/raw/` un archivo temporal `~$...docx`; el loader debe ignorar los archivos que empiezan por `~$`.
+- **Fase 1 cerrada (2026-10-13).**
+
 ### Pendiente del desarrollador
-1. **Decidir qué hacer con la contraseña** (4 veces en el texto) y con la **clave de licencia** visible en la captura de Deep Freeze: quitarla, filtrarla al indexar o mantenerla.
-2. **Decidir quién arregla el manual:** el desarrollador en Word (siguiendo el ejemplo del Paso 5) o Claude generando una copia corregida del manual completo, imagen por imagen, para revisarla al final.
-3. **Aplicar estilos Título 1/Título 2** (se explicó paso a paso; verificar con Vista → Panel de navegación).
-4. **Preparar las imágenes:** unir cada captura con sus flechas (Pegado especial → Imagen PNG), ponerlas "En línea con el texto" bajo su paso, añadir texto alternativo, revisar las 3 diminutas, y escribir como texto la información que solo esté en imágenes. Objetivo de la verificación: flotantes = 0, formas = 0, todas en línea y con texto alternativo (Claude puede volver a contarlas).
-5. **Corregir errores del manual:** en la sección 5, el bloque de Shadow Defender dice "Deep Freeze"; hay un "2." repetido en la sección 4.
-6. **Hacer el primer commit y push** de `.gitignore` y `CLAUDE.md`.
-7. Más adelante: la URL de la web y las cuentas de Supabase y OpenAI (Fase 3) y de Vercel (Fase 5).
+1. Más adelante: la URL de la web y las cuentas de Supabase y OpenAI (Fase 3) y de Vercel (Fase 5).
 
 ### Siguiente con Claude
-- Cerrar la Fase 1 con las decisiones anteriores y empezar la Fase 2: estructura de carpetas, `requirements.txt`, instalar librerías en el venv, `.env` y `bot/config.py`.
+- Fase 2: crear de nuevo el `.venv` (Python 3.12), estructura de carpetas, `requirements.txt`, instalar librerías, `.env` y `bot/config.py`.
 - Opcional, propuesto y aplazado: una prueba que guarde las imágenes como archivos y genere Markdown que apunte a ellas (vista previa de `word_loader.py`).
 
 - Historial de la primera conversación: `claude_conversation.md`.
