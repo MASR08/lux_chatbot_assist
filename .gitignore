@@ -4,7 +4,7 @@
 # Claves y contraseñas (NUNCA subirlas)
 .env
 
-# Manual original (contiene la contraseña de administrador; se guarda solo en local)
+# Manual original (documento interno; se guarda solo en local 
 data/raw/
 
 # Diagramas generados con Archify (se pueden regenerar)
